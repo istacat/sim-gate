@@ -17,7 +17,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/sign_in")
 
 
 def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
-    return AuthService.validate_token(token) 
+    return AuthService.validate_token(token)
 
 
 class AuthService:
@@ -27,7 +27,7 @@ class AuthService:
     def register_new_user(self, user_data: UserCreate) -> Token:
         user = db.User(
             username=user_data.username,
-            password_hash=self.hash_password(user_data.password)
+            password_hash=self.hash_password(user_data.password),
         )
         self.session.add(user)
         self.session.commit()
@@ -39,24 +39,17 @@ class AuthService:
             return HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate credentials",
-                headers={
-                    "WWW-Authenticate": "Bearer"
-                }
+                headers={"WWW-Authenticate": "Bearer"},
             )
 
-        user = (
-            self.session
-            .query(db.User)
-            .filter(db.User.username == username)
-            .first()
-        )
+        user = self.session.query(db.User).filter(db.User.username == username).first()
 
         if not user:
             raise exception()
 
         if not self.verify_password(password, user.password_hash):
             raise exception()
-        
+
         return self.create_token(user)
 
     @classmethod
@@ -72,20 +65,16 @@ class AuthService:
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
-            headers={
-                "WWW-Authenticate": "Bearer"
-            }
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
         try:
             payload = jwt.decode(
-                token,
-                config.JWT_SECRET,
-                algorithms=[config.JWT_ALGORITHM]
+                token, config.JWT_SECRET, algorithms=[config.JWT_ALGORITHM]
             )
         except JWTError:
             raise exception from None
-        
+
         user_data = payload.get("user")
 
         try:
@@ -105,12 +94,7 @@ class AuthService:
             "nbf": now,
             "exp": now + timedelta(seconds=int(config.JWT_EXP)),
             "sub": str(user_data.id),
-            "user": user_data.dict()
+            "user": user_data.dict(),
         }
-        token = jwt.encode(
-            payload,
-            config.JWT_SECRET,
-            algorithm=config.JWT_ALGORITHM
-        )
+        token = jwt.encode(payload, config.JWT_SECRET, algorithm=config.JWT_ALGORITHM)
         return Token(access_token=token)
-
