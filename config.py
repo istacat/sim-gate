@@ -8,6 +8,8 @@ class BaseConfig(BaseSettings):
     JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
     JWT_EXP: str = "3600"
+    APP_NAME: str = "SIM API"
+    APP_DESCRIPTION: str = "API sim manage service for Kryptr"
 
 
 class DevelopConfig(BaseConfig):
