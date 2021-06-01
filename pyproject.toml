@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "sim-gate"
+version = "0.1.0"
+description = ""
+authors = ["tsyboom <tsyboom@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "3.9"
+fastapi = "^0.65.1"
+uvicorn = "^0.14.0"
+pydantic = "^1.8.2"
+python-dotenv = "^0.17.1"
+SQLAlchemy = "^1.4.17"
+python-jose = "^3.2.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.5"
+requests = "^2.25.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+black = "^21.5b2"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
