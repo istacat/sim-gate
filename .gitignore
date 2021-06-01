@@ -7,6 +7,5 @@ env/
 # ignore files
 .env
 *.pyc
-/*.sqlite3*
-
+*.sqlite3*
 /backup.*
